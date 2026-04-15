@@ -773,11 +773,20 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   margin: 16px 0 20px;
   color: rgba(255,255,255,.7);
 }
+.footer-logo-row {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 40px;
+  margin-bottom: 40px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+}
 .footer-logo {
-  height: 48px;
+  height: 96px;
   width: auto;
-  filter: brightness(0) invert(1);
-  opacity: .95;
+  background: var(--white);
+  padding: 14px 22px;
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 24px rgba(0,0,0,.2);
 }
 .footer-badge {
   display: inline-block;
