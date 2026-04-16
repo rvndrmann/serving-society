@@ -1447,6 +1447,88 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   .appointment-layout { grid-template-columns: 1fr; }
 }
 
+/* ── Services Image-Card Grid ── */
+.svc-img-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  margin-top: 48px;
+}
+.svc-img-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+.svc-img-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(94,45,110,.18);
+}
+.svc-img-wrap {
+  position: relative;
+  overflow: hidden;
+}
+.svc-img-wrap img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+  transition: transform .4s ease;
+}
+.svc-img-card:hover .svc-img-wrap img {
+  transform: scale(1.05);
+}
+.svc-img-body {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.svc-img-body h3 {
+  background: var(--purple);
+  color: var(--white);
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 14px 20px;
+  margin: 0;
+  line-height: 1.3;
+  letter-spacing: .01em;
+}
+.svc-img-body p {
+  font-size: .88rem;
+  color: var(--text-soft);
+  line-height: 1.6;
+  padding: 16px 20px 12px;
+  margin: 0;
+  flex: 1;
+}
+.svc-read-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .85rem;
+  font-weight: 700;
+  color: var(--purple);
+  padding: 0 20px 18px;
+  transition: gap .2s ease;
+}
+.svc-img-card:hover .svc-read-more {
+  gap: 10px;
+}
+
+@media (max-width: 1024px) {
+  .svc-img-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .svc-img-grid { grid-template-columns: 1fr; }
+  .svc-img-wrap img { height: 200px; }
+}
+
 /* ── About Section Image ── */
 .about-with-image {
   display: grid;
@@ -1523,11 +1605,13 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   border-radius: var(--radius-lg);
   overflow: hidden;
   margin-bottom: 28px;
+  box-shadow: var(--shadow-lg);
 }
 .contact-image-wrap img {
   width: 100%;
-  height: 220px;
+  height: 280px;
   object-fit: cover;
+  object-position: center top;
   display: block;
   border-radius: var(--radius-lg);
 }
