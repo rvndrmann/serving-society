@@ -199,6 +199,53 @@ if (form) {
   });
 }
 
+/* ── Dropdown toggle (mobile) ── */
+document.querySelectorAll('.nav-link-dropdown').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    link.closest('.nav-dropdown').classList.toggle('dropdown-open');
+  });
+});
+
+/* ── Testimonial carousel ── */
+(function() {
+  const cards = document.querySelectorAll('.testimonial-card');
+  const dots = document.querySelectorAll('.testimonial-dot');
+  if (cards.length < 2) return;
+  let current = 0;
+  function show(idx) {
+    cards.forEach((c, i) => { c.style.display = i === idx ? 'block' : 'none'; });
+    dots.forEach((d, i) => { d.classList.toggle('active', i === idx); });
+    current = idx;
+  }
+  show(0);
+  dots.forEach((d, i) => d.addEventListener('click', () => show(i)));
+  setInterval(() => show((current + 1) % cards.length), 6000);
+})();
+
+/* ── Appointment form validation ── */
+const apptForm = document.getElementById('appointmentForm');
+if (apptForm) {
+  apptForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let valid = true;
+    apptForm.querySelectorAll('[required]').forEach(f => {
+      f.classList.remove('invalid');
+      if (!f.value.trim()) { f.classList.add('invalid'); valid = false; }
+    });
+    if (!valid) return;
+    const btn = apptForm.querySelector('button[type="submit"]');
+    btn.textContent = 'Submitting…';
+    btn.disabled = true;
+    setTimeout(() => {
+      apptForm.reset();
+      btn.textContent = 'Submit Appointment Request';
+      btn.disabled = false;
+      alert('Thank you! Your appointment request has been submitted. We will be in touch shortly.');
+    }, 1200);
+  });
+}
+
 /* ── Smooth anchor scroll (fallback for older browsers) ── */
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', (e) => {
