@@ -920,6 +920,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 @media (max-width: 480px) {
   .hero-actions { flex-direction: column; align-items: stretch; width: 100%; }
   .btn { width: 100%; justify-content: center; }
+  .services-photo-strip { grid-template-columns: 1fr; }
 }
 
 /* ============================================================
@@ -1445,31 +1446,6 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   .vm-cards { grid-template-columns: 1fr; }
   .appointment-layout { grid-template-columns: 1fr; }
 }
-@media (max-width: 768px) {
-  .why-cards { grid-template-columns: 1fr; }
-  .values-row { grid-template-columns: 1fr; gap: 8px; }
-  .dropdown-menu {
-    position: static;
-    transform: none;
-    box-shadow: none;
-    border: none;
-    min-width: 0;
-    padding: 0 0 0 16px;
-    background: transparent;
-  }
-  .dropdown-menu li a { color: var(--text); padding: 8px 16px; font-size: 1rem; }
-  .form-row { grid-template-columns: 1fr; }
-  .service-hero-img { height: 220px; }
-  .hero-inner { grid-template-columns: 1fr; }
-  .hero-image-wrap { display: none; }
-  .hero-content { text-align: center; }
-  .hero-subtitle { margin: 0 auto 40px; }
-  .hero-actions { justify-content: center; }
-  .hero-stats { justify-content: center; }
-  .about-with-image { grid-template-columns: 1fr; }
-  .services-photo-strip { grid-template-columns: 1fr 1fr; }
-  .contact-grid-inner { grid-template-columns: 1fr; }
-}
 
 /* ── About Section Image ── */
 .about-with-image {
@@ -1554,4 +1530,50 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   object-fit: cover;
   display: block;
   border-radius: var(--radius-lg);
+}
+
+/* ============================================================
+   RESPONSIVE — MOBILE (≤ 768px)
+   ============================================================ */
+@media (max-width: 768px) {
+  .why-cards { grid-template-columns: 1fr; }
+  .values-row { grid-template-columns: 1fr; gap: 8px; }
+  .dropdown-menu {
+    position: static;
+    transform: none;
+    box-shadow: none;
+    border: none;
+    min-width: 0;
+    padding: 0 0 0 16px;
+    background: transparent;
+  }
+  .dropdown-menu li a { color: var(--text); padding: 8px 16px; font-size: 1rem; }
+  .form-row { grid-template-columns: 1fr; }
+  .service-hero-img { height: 220px; }
+
+  /* Hero */
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-image-wrap { display: none; }
+  .hero-content { text-align: center; }
+  .hero-subtitle { margin: 0 auto 40px; }
+  .hero-actions { justify-content: center; }
+  .hero-stats { justify-content: center; }
+
+  /* About */
+  .about-with-image { grid-template-columns: 1fr; gap: 32px; }
+  .about-image-wrap img { height: 260px; }
+
+  /* Services photo strip */
+  .services-photo-strip { grid-template-columns: 1fr; gap: 16px; }
+  .services-photo-strip .strip-item img { height: 200px; }
+
+  /* Contact */
+  .contact-image-wrap img { height: 180px; }
+
+  /* Service pages */
+  .service-page-layout { grid-template-columns: 1fr; }
+  .appointment-layout { grid-template-columns: 1fr; }
+  .about-hero-grid { grid-template-columns: 1fr; }
+  .vm-grid { grid-template-columns: 1fr; }
+  .vm-cards { grid-template-columns: 1fr; }
 }
