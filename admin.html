@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard | Serving Society</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+</head>
+<body class="admin-page">
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar scrolled" id="navbar">
+    <div class="nav-container">
+      <a href="/index.html" class="nav-logo">
+        <img src="/Logo Serving Society.png" alt="Serving Society Logo" class="logo-img" />
+      </a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="/index.html" class="nav-link">Home</a></li>
+        <li><a href="/about.html" class="nav-link">About Us</a></li>
+        <li><a href="/appointment.html" class="nav-link nav-cta">Book Appointment</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ===== LOGIN VIEW ===== -->
+  <div class="admin-login-wrap" id="loginView">
+    <div class="admin-login-card">
+      <div class="admin-login-header">
+        <img src="/Logo Serving Society.png" alt="Serving Society" class="admin-login-logo" />
+        <h1>Admin Login</h1>
+        <p>Sign in to access the dashboard</p>
+      </div>
+      <div class="admin-login-body">
+        <div class="admin-error" id="loginError" style="display:none;"></div>
+        <div class="form-group">
+          <label for="adminEmail">Email Address</label>
+          <input type="email" id="adminEmail" placeholder="admin@servingsociety.com.au" autocomplete="email" />
+        </div>
+        <div class="form-group">
+          <label for="adminPassword">Password</label>
+          <input type="password" id="adminPassword" placeholder="••••••••" autocomplete="current-password" />
+        </div>
+        <button class="admin-sign-in-btn" id="signInBtn" onclick="handleSignIn()">
+          <span id="signInBtnText">Sign In</span>
+        </button>
+        <p class="admin-login-note">Access restricted to authorised administrators only.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== DASHBOARD VIEW ===== -->
+  <div class="admin-dashboard" id="dashboardView" style="display:none;">
+
+    <!-- Dashboard Header -->
+    <div class="admin-header">
+      <div class="admin-header-inner">
+        <div class="admin-header-left">
+          <h1 class="admin-title">Admin Dashboard</h1>
+          <span class="admin-badge admin-badge--live" id="connectionBadge">
+            <span class="admin-badge-dot"></span> Live
+          </span>
+        </div>
+        <div class="admin-header-right">
+          <span class="admin-user-label" id="adminUserLabel"></span>
+          <button class="admin-sign-out-btn" onclick="handleSignOut()">Sign Out</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-content">
+
+      <!-- Stats Row -->
+      <div class="admin-stats" id="statsRow">
+        <div class="admin-stat-card">
+          <div class="admin-stat-number" id="statTotalContacts">—</div>
+          <div class="admin-stat-label">Total Contacts</div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="admin-stat-number" id="statTotalAppointments">—</div>
+          <div class="admin-stat-label">Total Appointments</div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="admin-stat-number" id="statTodaySubmissions">—</div>
+          <div class="admin-stat-label">Today's Submissions</div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="admin-stat-number" id="statThisWeek">—</div>
+          <div class="admin-stat-label">This Week</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="admin-tabs-wrap">
+        <div class="admin-tabs">
+          <button class="admin-tab active" id="tabContacts" onclick="switchTab('contacts')">
+            Contact Enquiries
+            <span class="admin-tab-count" id="tabContactCount"></span>
+          </button>
+          <button class="admin-tab" id="tabAppointments" onclick="switchTab('appointments')">
+            Appointment Requests
+            <span class="admin-tab-count" id="tabApptCount"></span>
+          </button>
+        </div>
+        <button class="admin-refresh-btn" onclick="loadData()" title="Refresh data">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M23 4v6h-6M1 20v-6h6"/>
+            <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+          </svg>
+          Refresh
+        </button>
+      </div>
+
+      <!-- Contacts Table Panel -->
+      <div class="admin-panel" id="panelContacts">
+        <div class="admin-panel-header">
+          <h2>Contact Enquiries</h2>
+          <span class="admin-panel-subtitle">All messages submitted via the contact form, newest first.</span>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table" id="contactsTable">
+            <thead>
+              <tr>
+                <th>Date &amp; Time</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Service</th>
+                <th>Message</th>
+              </tr>
+            </thead>
+            <tbody id="contactsTableBody">
+              <tr><td colspan="6" class="admin-empty-cell"><div class="admin-loading">Loading…</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Appointments Table Panel -->
+      <div class="admin-panel" id="panelAppointments" style="display:none;">
+        <div class="admin-panel-header">
+          <h2>Appointment Requests</h2>
+          <span class="admin-panel-subtitle">All appointment requests submitted via the booking form, newest first.</span>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table" id="appointmentsTable">
+            <thead>
+              <tr>
+                <th>Date &amp; Time</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Contact Method</th>
+                <th>Services</th>
+                <th>Preferred Date</th>
+                <th>Preferred Time</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody id="appointmentsTableBody">
+              <tr><td colspan="9" class="admin-empty-cell"><div class="admin-loading">Loading…</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /.admin-content -->
+  </div><!-- /.admin-dashboard -->
+
+  <script>
+    // ============================================================
+    // SUPABASE CONFIG — replace with your actual project values
+    // ============================================================
+    const SUPABASE_URL      = 'YOUR_SUPABASE_URL';
+    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+
+    // ── Init client (after CDN script loads) ──
+    let _supabase;
+
+    window.addEventListener('load', () => {
+      _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      initAdmin();
+    });
+
+    // ============================================================
+    // AUTH
+    // ============================================================
+    async function initAdmin() {
+      const { data: { session } } = await _supabase.auth.getSession();
+      if (session) {
+        showDashboard(session.user);
+      } else {
+        showLogin();
+      }
+
+      // Listen for auth state changes
+      _supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN' && session) {
+          showDashboard(session.user);
+        } else if (event === 'SIGNED_OUT') {
+          showLogin();
+        }
+      });
+    }
+
+    function showLogin() {
+      document.getElementById('loginView').style.display = 'flex';
+      document.getElementById('dashboardView').style.display = 'none';
+    }
+
+    function showDashboard(user) {
+      document.getElementById('loginView').style.display = 'none';
+      document.getElementById('dashboardView').style.display = 'block';
+      document.getElementById('adminUserLabel').textContent = user.email || 'Admin';
+      loadData();
+    }
+
+    async function handleSignIn() {
+      const email    = document.getElementById('adminEmail').value.trim();
+      const password = document.getElementById('adminPassword').value;
+      const errorEl  = document.getElementById('loginError');
+      const btn      = document.getElementById('signInBtn');
+      const btnText  = document.getElementById('signInBtnText');
+
+      errorEl.style.display = 'none';
+
+      if (!email || !password) {
+        showLoginError('Please enter your email and password.');
+        return;
+      }
+
+      btnText.textContent = 'Signing in…';
+      btn.disabled = true;
+
+      const { error } = await _supabase.auth.signInWithPassword({ email, password });
+
+      btn.disabled = false;
+      btnText.textContent = 'Sign In';
+
+      if (error) {
+        showLoginError(error.message || 'Invalid credentials. Please try again.');
+      }
+    }
+
+    function showLoginError(msg) {
+      const el = document.getElementById('loginError');
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
+    async function handleSignOut() {
+      await _supabase.auth.signOut();
+    }
+
+    // Allow Enter key on login form
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && document.getElementById('loginView').style.display !== 'none') {
+        handleSignIn();
+      }
+    });
+
+    // ============================================================
+    // DATA LOADING
+    // ============================================================
+    let contactsData     = [];
+    let appointmentsData = [];
+
+    async function loadData() {
+      await Promise.all([loadContacts(), loadAppointments()]);
+      updateStats();
+    }
+
+    async function loadContacts() {
+      const tbody = document.getElementById('contactsTableBody');
+      tbody.innerHTML = '<tr><td colspan="6" class="admin-empty-cell"><div class="admin-loading">Loading…</div></td></tr>';
+
+      const { data, error } = await _supabase
+        .from('contacts')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        tbody.innerHTML = `<tr><td colspan="6" class="admin-empty-cell"><div class="admin-error-inline">Error: ${escHtml(error.message)}</div></td></tr>`;
+        return;
+      }
+
+      contactsData = data || [];
+      document.getElementById('tabContactCount').textContent = contactsData.length;
+
+      if (contactsData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="admin-empty-cell"><div class="admin-empty">No contact enquiries yet.</div></td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = contactsData.map((row, i) => `
+        <tr class="${i % 2 === 0 ? '' : 'admin-row-alt'}">
+          <td class="admin-td-nowrap">${formatDatetime(row.created_at)}</td>
+          <td><strong>${escHtml(row.name || '—')}</strong></td>
+          <td>${row.email ? `<a href="mailto:${escHtml(row.email)}" class="admin-link">${escHtml(row.email)}</a>` : '—'}</td>
+          <td class="admin-td-nowrap">${escHtml(row.phone || '—')}</td>
+          <td>${row.service ? `<span class="admin-badge admin-badge--service">${escHtml(row.service)}</span>` : '—'}</td>
+          <td class="admin-td-message">${escHtml(row.message || '—')}</td>
+        </tr>
+      `).join('');
+    }
+
+    async function loadAppointments() {
+      const tbody = document.getElementById('appointmentsTableBody');
+      tbody.innerHTML = '<tr><td colspan="9" class="admin-empty-cell"><div class="admin-loading">Loading…</div></td></tr>';
+
+      const { data, error } = await _supabase
+        .from('appointments')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        tbody.innerHTML = `<tr><td colspan="9" class="admin-empty-cell"><div class="admin-error-inline">Error: ${escHtml(error.message)}</div></td></tr>`;
+        return;
+      }
+
+      appointmentsData = data || [];
+      document.getElementById('tabApptCount').textContent = appointmentsData.length;
+
+      if (appointmentsData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" class="admin-empty-cell"><div class="admin-empty">No appointment requests yet.</div></td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = appointmentsData.map((row, i) => `
+        <tr class="${i % 2 === 0 ? '' : 'admin-row-alt'}">
+          <td class="admin-td-nowrap">${formatDatetime(row.created_at)}</td>
+          <td><strong>${escHtml((row.first_name || '') + ' ' + (row.last_name || '') || '—')}</strong></td>
+          <td>${row.email ? `<a href="mailto:${escHtml(row.email)}" class="admin-link">${escHtml(row.email)}</a>` : '—'}</td>
+          <td class="admin-td-nowrap">${escHtml(row.phone || '—')}</td>
+          <td>${row.contact_method ? `<span class="admin-badge admin-badge--method">${escHtml(row.contact_method)}</span>` : '—'}</td>
+          <td class="admin-td-message">${escHtml(row.services || '—')}</td>
+          <td class="admin-td-nowrap">${row.preferred_date ? formatDate(row.preferred_date) : '—'}</td>
+          <td class="admin-td-nowrap">${row.preferred_time ? formatTime(row.preferred_time) : '—'}</td>
+          <td class="admin-td-message">${escHtml(row.notes || '—')}</td>
+        </tr>
+      `).join('');
+    }
+
+    function updateStats() {
+      const today = new Date().toISOString().slice(0, 10);
+
+      const totalContacts     = contactsData.length;
+      const totalAppointments = appointmentsData.length;
+
+      const todayContacts = contactsData.filter(r => r.created_at && r.created_at.startsWith(today)).length;
+      const todayAppts    = appointmentsData.filter(r => r.created_at && r.created_at.startsWith(today)).length;
+      const todayTotal    = todayContacts + todayAppts;
+
+      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+      const weekContacts = contactsData.filter(r => r.created_at > weekAgo).length;
+      const weekAppts    = appointmentsData.filter(r => r.created_at > weekAgo).length;
+      const weekTotal    = weekContacts + weekAppts;
+
+      document.getElementById('statTotalContacts').textContent     = totalContacts;
+      document.getElementById('statTotalAppointments').textContent = totalAppointments;
+      document.getElementById('statTodaySubmissions').textContent  = todayTotal;
+      document.getElementById('statThisWeek').textContent          = weekTotal;
+    }
+
+    // ============================================================
+    // TABS
+    // ============================================================
+    let activeTab = 'contacts';
+
+    function switchTab(tab) {
+      activeTab = tab;
+
+      document.getElementById('tabContacts').classList.toggle('active', tab === 'contacts');
+      document.getElementById('tabAppointments').classList.toggle('active', tab === 'appointments');
+
+      document.getElementById('panelContacts').style.display     = tab === 'contacts'     ? 'block' : 'none';
+      document.getElementById('panelAppointments').style.display = tab === 'appointments' ? 'block' : 'none';
+    }
+
+    // ============================================================
+    // HELPERS
+    // ============================================================
+    function escHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function formatDatetime(iso) {
+      if (!iso) return '—';
+      const d = new Date(iso);
+      return d.toLocaleDateString('en-AU', { day: '2-digit', month: 'short', year: 'numeric' })
+        + '<br><span class="admin-time">' + d.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' }) + '</span>';
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '—';
+      const [y, m, d] = dateStr.split('-');
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return `${parseInt(d)} ${months[parseInt(m)-1]} ${y}`;
+    }
+
+    function formatTime(timeStr) {
+      if (!timeStr) return '—';
+      const [h, m] = timeStr.split(':');
+      const hour = parseInt(h);
+      const ampm = hour >= 12 ? 'PM' : 'AM';
+      const h12  = hour % 12 || 12;
+      return `${h12}:${m} ${ampm}`;
+    }
+
+    // Mobile nav toggle
+    const navToggle = document.getElementById('navToggle');
+    const navLinksEl = document.getElementById('navLinks');
+    navToggle.addEventListener('click', () => {
+      const open = navLinksEl.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', open);
+      const spans = navToggle.querySelectorAll('span');
+      if (open) {
+        spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+        spans[1].style.opacity   = '0';
+        spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
+      } else {
+        spans.forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
+      }
+    });
+  </script>
+
+</body>
+</html>

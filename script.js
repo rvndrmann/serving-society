@@ -2,6 +2,21 @@
    SERVING SOCIETY — Interactive JS
    ============================================================ */
 
+/* ── Supabase Config ──
+   Note: The Supabase CDN script is loaded in index.html and appointment.html
+   via: <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+   Replace the placeholder values below with your actual Supabase project credentials.
+*/
+const SUPABASE_URL      = 'YOUR_SUPABASE_URL';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+
+// Initialise client and expose globally (runs after window load so CDN is ready)
+window.addEventListener('load', () => {
+  if (typeof supabase !== 'undefined') {
+    window._supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+});
+
 /* ── Navbar scroll behaviour ── */
 const navbar = document.getElementById('navbar');
 const navLinks = document.querySelectorAll('.nav-link');
@@ -158,7 +173,7 @@ const form = document.getElementById('contactForm');
 const formSuccess = document.getElementById('formSuccess');
 
 if (form) {
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     let valid = true;
 
@@ -179,18 +194,45 @@ if (form) {
 
     if (!valid) return;
 
-    // Simulate submission (replace with real endpoint)
+    // Submit to Supabase
     const btn = form.querySelector('button[type="submit"]');
     btn.textContent = 'Sending…';
     btn.disabled = true;
 
-    setTimeout(() => {
+    const payload = {
+      name:    form.querySelector('#name')    ? form.querySelector('#name').value.trim()    : '',
+      phone:   form.querySelector('#phone')   ? form.querySelector('#phone').value.trim()   : '',
+      email:   form.querySelector('#email')   ? form.querySelector('#email').value.trim()   : '',
+      service: form.querySelector('#service') ? form.querySelector('#service').value.trim() : '',
+      message: form.querySelector('#message') ? form.querySelector('#message').value.trim() : '',
+    };
+
+    try {
+      if (window._supabase) {
+        const { error } = await window._supabase.from('contacts').insert(payload);
+        if (error) throw error;
+      }
+      // Success
       form.querySelectorAll('input, select, textarea').forEach(f => f.value = '');
       btn.textContent = 'Send Message';
       btn.disabled = false;
       formSuccess.classList.add('show');
       setTimeout(() => formSuccess.classList.remove('show'), 5000);
-    }, 1200);
+    } catch (err) {
+      console.error('Contact form submission error:', err);
+      btn.textContent = 'Send Message';
+      btn.disabled = false;
+      // Show inline error feedback
+      let errEl = form.querySelector('.form-submit-error');
+      if (!errEl) {
+        errEl = document.createElement('p');
+        errEl.className = 'form-submit-error';
+        errEl.style.cssText = 'color:#D32F2F;font-size:.88rem;margin-top:4px;';
+        btn.parentNode.insertBefore(errEl, btn.nextSibling);
+      }
+      errEl.textContent = 'Sorry, there was a problem sending your message. Please try again or call us directly.';
+      setTimeout(() => { if (errEl) errEl.textContent = ''; }, 7000);
+    }
   });
 
   // Remove invalid class on input
@@ -223,10 +265,10 @@ document.querySelectorAll('.nav-link-dropdown').forEach(link => {
   setInterval(() => show((current + 1) % cards.length), 6000);
 })();
 
-/* ── Appointment form validation ── */
+/* ── Appointment form validation & Supabase submit ── */
 const apptForm = document.getElementById('appointmentForm');
 if (apptForm) {
-  apptForm.addEventListener('submit', (e) => {
+  apptForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     let valid = true;
     apptForm.querySelectorAll('[required]').forEach(f => {
@@ -234,15 +276,57 @@ if (apptForm) {
       if (!f.value.trim()) { f.classList.add('invalid'); valid = false; }
     });
     if (!valid) return;
+
     const btn = apptForm.querySelector('button[type="submit"]');
     btn.textContent = 'Submitting…';
     btn.disabled = true;
-    setTimeout(() => {
+
+    // Collect checked services
+    const checkedServices = [...apptForm.querySelectorAll('input[type="checkbox"]:checked')]
+      .map(cb => cb.value || cb.closest('label')?.textContent?.trim() || '')
+      .filter(Boolean)
+      .join(', ');
+
+    const payload = {
+      first_name:     apptForm.querySelector('#firstName, [name="firstName"], input[placeholder*="First"]')?.value?.trim() || '',
+      last_name:      apptForm.querySelector('#lastName,  [name="lastName"],  input[placeholder*="Last"]')?.value?.trim()  || '',
+      email:          apptForm.querySelector('#apptEmail, [name="email"], input[type="email"]')?.value?.trim()              || '',
+      phone:          apptForm.querySelector('#apptPhone, [name="phone"], input[type="tel"]')?.value?.trim()               || '',
+      contact_method: apptForm.querySelector('#contactMethod, [name="contactMethod"], select')?.value?.trim()              || '',
+      services:       checkedServices,
+      preferred_date: apptForm.querySelector('#preferredDate, [name="preferredDate"], input[type="date"]')?.value          || null,
+      preferred_time: apptForm.querySelector('#preferredTime, [name="preferredTime"], input[type="time"]')?.value          || null,
+      notes:          apptForm.querySelector('#notes, [name="notes"], textarea')?.value?.trim()                            || '',
+    };
+
+    try {
+      if (window._supabase) {
+        const { error } = await window._supabase.from('appointments').insert(payload);
+        if (error) throw error;
+      }
       apptForm.reset();
       btn.textContent = 'Submit Appointment Request';
       btn.disabled = false;
-      alert('Thank you! Your appointment request has been submitted. We will be in touch shortly.');
-    }, 1200);
+
+      // Show success message
+      let successEl = document.getElementById('apptSuccess');
+      if (!successEl) {
+        successEl = document.createElement('div');
+        successEl.id = 'apptSuccess';
+        successEl.className = 'form-success';
+        successEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Thank you! Your appointment request has been submitted. We will be in touch shortly.';
+        apptForm.parentNode.insertBefore(successEl, apptForm);
+      }
+      successEl.classList.add('show');
+      successEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      setTimeout(() => successEl.classList.remove('show'), 7000);
+
+    } catch (err) {
+      console.error('Appointment form submission error:', err);
+      btn.textContent = 'Submit Appointment Request';
+      btn.disabled = false;
+      alert('Sorry, there was a problem submitting your request. Please try again or call us directly.');
+    }
   });
 }
 
