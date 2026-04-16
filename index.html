@@ -49,35 +49,40 @@
   <section class="hero" id="home">
     <div class="hero-bg"></div>
     <div class="hero-particles" id="particles"></div>
-    <div class="hero-content">
-      <span class="hero-badge">NDIS Registered Provider</span>
-      <h1 class="hero-title">
-        Supporting You to <span class="accent">Live</span><br />
-        <span class="accent">Independently</span> &amp; Thrive
-      </h1>
-      <p class="hero-subtitle">
-        Serving Society delivers person-centred NDIS support services across Australia —
-        empowering participants to achieve their goals, build capacity, and live life on their own terms.
-      </p>
-      <div class="hero-actions">
-        <a href="#contact" class="btn btn-primary">Get in Touch</a>
-        <a href="#services" class="btn btn-outline">Explore Services</a>
+    <div class="hero-inner">
+      <div class="hero-content">
+        <span class="hero-badge">NDIS Registered Provider</span>
+        <h1 class="hero-title">
+          Supporting You to <span class="accent">Live</span><br />
+          <span class="accent">Independently</span> &amp; Thrive
+        </h1>
+        <p class="hero-subtitle">
+          Serving Society delivers person-centred NDIS support services across Australia —
+          empowering participants to achieve their goals, build capacity, and live life on their own terms.
+        </p>
+        <div class="hero-actions">
+          <a href="#contact" class="btn btn-primary">Get in Touch</a>
+          <a href="#services" class="btn btn-outline">Explore Services</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat">
+            <span class="stat-number">100+</span>
+            <span class="stat-label">Participants Supported</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat">
+            <span class="stat-number">6</span>
+            <span class="stat-label">Core Service Areas</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat">
+            <span class="stat-number">24/7</span>
+            <span class="stat-label">Support Available</span>
+          </div>
+        </div>
       </div>
-      <div class="hero-stats">
-        <div class="stat">
-          <span class="stat-number">100+</span>
-          <span class="stat-label">Participants Supported</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat">
-          <span class="stat-number">6</span>
-          <span class="stat-label">Core Service Areas</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat">
-          <span class="stat-number">24/7</span>
-          <span class="stat-label">Support Available</span>
-        </div>
+      <div class="hero-image-wrap">
+        <img src="/images/hero-homepage.png" alt="NDIS support worker with participant in park" class="hero-image" />
       </div>
     </div>
     <div class="hero-scroll-hint">
@@ -97,7 +102,8 @@
         </p>
       </div>
 
-      <div class="mvv-grid">
+      <div class="about-with-image">
+        <div class="mvv-grid">
         <div class="mvv-card reveal">
           <div class="mvv-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
@@ -119,7 +125,12 @@
           <h3>Our Values</h3>
           <p>Respect, Integrity, Inclusivity, Excellence, and Collaboration. Everything we do is guided by person-centred practice and the NDIS Practice Standards.</p>
         </div>
-      </div>
+        </div><!-- /mvv-grid -->
+        <div class="about-image-wrap reveal">
+          <img src="/images/about-hero.png" alt="Support worker and NDIS participant together" />
+          <div class="about-image-badge">NDIS Registered Provider</div>
+        </div>
+      </div><!-- /about-with-image -->
 
       <div class="approach-grid reveal">
         <div class="approach-item">
@@ -304,6 +315,23 @@
         </div>
 
       </div><!-- /services-grid -->
+
+      <!-- Photo strip -->
+      <div class="services-photo-strip">
+        <div class="strip-item reveal">
+          <img src="/images/community-participation.png" alt="Community participation support" />
+          <div class="strip-caption">Community Participation</div>
+        </div>
+        <div class="strip-item reveal">
+          <img src="/images/assist-personal-activities.png" alt="Assist personal activities" />
+          <div class="strip-caption">Personal Activities Support</div>
+        </div>
+        <div class="strip-item reveal">
+          <img src="/images/household-tasks.png" alt="Household tasks support" />
+          <div class="strip-caption">Household Tasks</div>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -333,6 +361,9 @@
 
       <div class="contact-grid">
         <div class="contact-info reveal">
+          <div class="contact-image-wrap">
+            <img src="/images/appointment.png" alt="Friendly team ready to help you" />
+          </div>
           <div class="contact-item">
             <div class="contact-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
