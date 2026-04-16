@@ -1447,6 +1447,173 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   .appointment-layout { grid-template-columns: 1fr; }
 }
 
+/* ── About Split Layout ── */
+.about-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+  padding: 72px 0 56px;
+}
+
+.about-split-img {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: visible;
+}
+.about-split-img img {
+  width: 100%;
+  height: 520px;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  display: block;
+  box-shadow: var(--shadow-lg);
+}
+.about-split-badge {
+  position: absolute;
+  bottom: -20px;
+  right: -20px;
+  background: var(--lime);
+  color: var(--purple-dark);
+  border-radius: var(--radius-md);
+  padding: 18px 24px;
+  box-shadow: var(--shadow-md);
+  text-align: center;
+  min-width: 130px;
+}
+.about-split-badge .badge-number {
+  display: block;
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.about-split-badge .badge-label {
+  display: block;
+  font-size: .75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.about-split-content { padding-right: 8px; }
+.about-split-content h2 {
+  font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+  font-weight: 700;
+  color: var(--purple);
+  line-height: 1.2;
+  margin: 12px 0 18px;
+}
+.about-split-content h2 span { color: var(--purple-mid); }
+.about-split-content > p {
+  color: var(--text-soft);
+  font-size: 1rem;
+  line-height: 1.7;
+  margin-bottom: 28px;
+}
+
+.about-mvv-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 32px;
+}
+.about-mvv-item {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+.about-mvv-icon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  background: var(--purple-light);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--purple);
+}
+.about-mvv-icon svg { width: 20px; height: 20px; }
+.about-mvv-item h4 {
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--purple);
+  margin-bottom: 4px;
+}
+.about-mvv-item p {
+  font-size: .88rem;
+  color: var(--text-soft);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* 4-step approach row */
+.approach-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  background: var(--purple);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.approach-step {
+  padding: 36px 28px;
+  border-right: 1px solid rgba(255,255,255,.12);
+  position: relative;
+}
+.approach-step:last-child { border-right: none; }
+.approach-step-num {
+  font-size: 3rem;
+  font-weight: 800;
+  color: rgba(255,255,255,.12);
+  line-height: 1;
+  margin-bottom: 16px;
+  font-family: 'Outfit', sans-serif;
+}
+.approach-step h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+.approach-step p {
+  font-size: .85rem;
+  color: rgba(255,255,255,.75);
+  line-height: 1.65;
+  margin: 0;
+}
+.approach-step::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--lime);
+  opacity: 0;
+  transition: opacity .3s ease;
+}
+.approach-step:hover::before { opacity: 1; }
+
+@media (max-width: 1024px) {
+  .about-split { grid-template-columns: 1fr; gap: 40px; padding: 48px 0 40px; }
+  .about-split-img img { height: 380px; }
+  .about-split-badge { right: 16px; bottom: -16px; }
+  .about-split-content { padding-right: 0; }
+  .approach-row { grid-template-columns: repeat(2, 1fr); }
+  .approach-step { border-right: 1px solid rgba(255,255,255,.12); border-bottom: 1px solid rgba(255,255,255,.12); }
+  .approach-step:nth-child(2n) { border-right: none; }
+  .approach-step:nth-last-child(-n+2) { border-bottom: none; }
+}
+@media (max-width: 600px) {
+  .about-split-img img { height: 260px; }
+  .approach-row { grid-template-columns: 1fr; }
+  .approach-step { border-right: none; border-bottom: 1px solid rgba(255,255,255,.12); }
+  .approach-step:last-child { border-bottom: none; }
+}
+
 /* ── Services Image-Card Grid ── */
 .svc-img-grid {
   display: grid;
