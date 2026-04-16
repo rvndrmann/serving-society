@@ -317,7 +317,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .hero-content {
   position: relative;
   z-index: 2;
-  text-align: left;
+  text-align: center;
 }
 .hero-badge {
   display: inline-block;
@@ -351,14 +351,14 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   font-size: clamp(1rem, 1.6vw, 1.15rem);
   color: rgba(255,255,255,.9);
   max-width: 540px;
-  margin: 0 0 40px;
+  margin: 0 auto 40px;
   line-height: 1.7;
   animation: fadeDown .6s .2s ease both;
 }
 .hero-actions {
   display: flex;
   gap: 16px;
-  justify-content: flex-start;
+  justify-content: center;
   flex-wrap: wrap;
   margin-bottom: 56px;
   animation: fadeDown .6s .3s ease both;
@@ -366,7 +366,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .hero-stats {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 40px;
   flex-wrap: wrap;
   animation: fadeDown .6s .4s ease both;
